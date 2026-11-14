@@ -64,8 +64,39 @@ export const rotateRefreshToken = async (
       throw new AppError('AUTH_REFRESH_INVALID');
     }
 
-    // Reuse detection: if the token was already revoked, revoke all tokens for this user!
+    // Reuse detection with 15-second grace window for concurrent requests (e.g. React StrictMode, multiple tabs)
     if (tokenRecord.revokedAt !== null) {
+      const gracePeriodMs = 15000;
+      const elapsedSinceRevocation = Date.now() - tokenRecord.revokedAt.getTime();
+
+      if (elapsedSinceRevocation <= gracePeriodMs && tokenRecord.replacedBy) {
+        const [user] = await tx
+          .select()
+          .from(users)
+          .where(eq(users.id, tokenRecord.userId))
+          .limit(1);
+
+        if (user && user.isActive) {
+          const newRawToken = generateRawToken();
+          const newTokenHash = hashToken(newRawToken);
+          const newExpiresAt = new Date(
+            Date.now() + env.REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
+          );
+
+          await tx.insert(refreshTokens).values({
+            userId: user.id,
+            tokenHash: newTokenHash,
+            expiresAt: newExpiresAt,
+          });
+
+          return {
+            userId: user.id,
+            newRawToken,
+          };
+        }
+      }
+
+      // Beyond grace period: true token theft/reuse attempt -> revoke entire token family
       await tx
         .update(refreshTokens)
         .set({ revokedAt: new Date() })
