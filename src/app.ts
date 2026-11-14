@@ -40,28 +40,11 @@ if (env.NODE_ENV !== 'test') {
 
 app.use(helmet());
 
-const allowedOrigins = env.CORS_ORIGINS.split(',').map((o) => o.trim());
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, Postman)
-      if (!origin) {
-        return callback(null, true);
-      }
-      // If CORS_ORIGINS is '*' or contains '*', reflect origin (compatible with credentials: true)
-      if (allowedOrigins.includes('*')) {
-        return callback(null, true);
-      }
-      // If origin is in allowedOrigins
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      // Allow any Vercel deployment (e.g. *.vercel.app) or localhost
-      if (origin.endsWith('.vercel.app') || origin.startsWith('http://localhost:')) {
-        return callback(null, true);
-      }
-      // Allow remote origins
-      return callback(null, true);
+    origin: (_origin, callback) => {
+      // Allow all origins dynamically while maintaining credentials/cookie support
+      callback(null, true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
