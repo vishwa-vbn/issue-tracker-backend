@@ -4,9 +4,10 @@ REST API for the Issue Tracker System: user and admin authentication, issue mana
 
 |                   |                                                                  |
 | ----------------- | ---------------------------------------------------------------- |
-| **Live API**      | `https://<backend>.onrender.com/api/v1` _(replace after deploy)_ |
-| **Live app**      | `https://<frontend>.vercel.app` _(replace after deploy)_         |
-| **Frontend repo** | `https://github.com/<you>/issue-tracker-frontend`                |
+| **Live API**      | `https://issue-tracker-backend-three.vercel.app/api/v1`          |
+| **Live app**      | `https://issue-tracker-frontend-psi.vercel.app`                  |
+| **Backend repo**  | `https://github.com/vishwa-vbn/issue-tracker-backend`            |
+| **Frontend repo** | `https://github.com/vishwa-vbn/issue-tracker-frontend`           |
 | **Health check**  | `GET /api/v1/health`                                             |
 
 > **Heads-up for reviewers:** the API runs on a free Render instance that sleeps after 15 minutes of inactivity. A monitor pings it every 5 minutes, but if the very first request is slow (~1 min), it is waking up.

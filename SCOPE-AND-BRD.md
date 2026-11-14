@@ -23,10 +23,10 @@ Target scale: **~10 users**, all on free-tier services. Quality bar: production-
 
 ## 3. Roles
 
-| Role  | How created                                                    | Capabilities (summary)                                             |
-| ----- | -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| USER  | Self-registration                                              | Create issues, work on issues they report or are assigned, comment |
-| ADMIN | Seeded by script from env vars (never via public registration) | Everything a USER can do, on **all** issues, plus user management  |
+| Role  | How created | Capabilities (summary) |
+| ----- | ----------- | ---------------------- |
+| USER  | Self-registration | Create issues, work on issues they report or are assigned, comment |
+| ADMIN | Seeded by script from env vars (never via public registration) | Everything a USER can do, on **all** issues, plus user management |
 
 ---
 
@@ -36,29 +36,29 @@ Target scale: **~10 users**, all on free-tier services. Quality bar: production-
 
 **Must have** (required by the task brief)
 
-| ID   | Requirement                                                            |
-| ---- | ---------------------------------------------------------------------- |
-| F-01 | User registration (name, email, password)                              |
-| F-02 | User login / logout / silent session restore                           |
+| ID | Requirement |
+| -- | ----------- |
+| F-01 | User registration (name, email, password) |
+| F-02 | User login / logout / silent session restore |
 | F-03 | Separate Admin login (`/admin/login`) that only accepts ADMIN accounts |
-| F-04 | Create, view, edit, delete (soft) issues                               |
-| F-05 | Assign / unassign an issue to a user                                   |
-| F-06 | Status tracking: `OPEN`, `IN_PROGRESS`, `CLOSED`, with reopen          |
-| F-07 | Comments on issues (add, edit own, delete own)                         |
-| F-08 | Dashboard with counts (total, by status, mine)                         |
-| F-09 | Role-based access control enforced on the server                       |
-| F-10 | Deployed on free hosting; README + BRD with Deployment section         |
+| F-04 | Create, view, edit, delete (soft) issues |
+| F-05 | Assign / unassign an issue to a user |
+| F-06 | Status tracking: `OPEN`, `IN_PROGRESS`, `CLOSED`, with reopen |
+| F-07 | Comments on issues (add, edit own, delete own) |
+| F-08 | Dashboard with counts (total, by status, mine) |
+| F-09 | Role-based access control enforced on the server |
+| F-10 | Deployed on free hosting; README + BRD with Deployment section |
 
 **Should have** (cheap, expected of an issue tracker)
 
-| ID   | Requirement                                                                           |
-| ---- | ------------------------------------------------------------------------------------- |
-| F-11 | Issue priority (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`)                                  |
+| ID | Requirement |
+| -- | ----------- |
+| F-11 | Issue priority (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`) |
 | F-12 | List with search, filters (status, priority, assignee, reporter), sorting, pagination |
-| F-13 | Activity timeline per issue (created, status changed, assigned, edited)               |
-| F-14 | Admin user management (list, change role, activate/deactivate)                        |
-| F-15 | Seeded demo data so reviewers see a populated dashboard                               |
-| F-16 | Automated tests on auth, permissions and issue flows; GitHub Actions CI               |
+| F-13 | Activity timeline per issue (created, status changed, assigned, edited) |
+| F-14 | Admin user management (list, change role, activate/deactivate) |
+| F-15 | Seeded demo data so reviewers see a populated dashboard |
+| F-16 | Automated tests on auth, permissions and issue flows; GitHub Actions CI |
 
 **Could have** (only if time remains after Phase 7)
 
@@ -72,19 +72,19 @@ Email / notifications, password reset by email, OAuth / social login, file attac
 
 ## 5. Permission matrix (server-enforced)
 
-| Action                              |        Anonymous         |                      USER                       |       ADMIN       |
-| ----------------------------------- | :----------------------: | :---------------------------------------------: | :---------------: |
-| Register / log in                   |            ✅            |                        —                        |         —         |
-| Admin login                         | ✅ (ADMIN accounts only) |                       ❌                        |        ✅         |
-| View issues, comments, dashboard    |            ❌            |                 ✅ (all issues)                 |        ✅         |
-| Create issue                        |            ❌            |                       ✅                        |        ✅         |
-| Edit title / description / priority |            ❌            |                 Own (reporter)                  |        Any        |
-| Delete (soft) issue                 |            ❌            |                 Own (reporter)                  |        Any        |
-| Change status                       |            ❌            |              Reporter or assignee               |        Any        |
-| Assign / unassign                   |            ❌            |                    Reporter                     |        Any        |
-| Add comment                         |            ❌            |                       ✅                        |        ✅         |
-| Edit / delete comment               |            ❌            |                       Own                       | Any (delete only) |
-| List / manage users                 |            ❌            | ❌ (can read the minimal assignable-users list) |        ✅         |
+| Action | Anonymous | USER | ADMIN |
+| ------ | :-------: | :--: | :---: |
+| Register / log in | ✅ | — | — |
+| Admin login | ✅ (ADMIN accounts only) | ❌ | ✅ |
+| View issues, comments, dashboard | ❌ | ✅ (all issues) | ✅ |
+| Create issue | ❌ | ✅ | ✅ |
+| Edit title / description / priority | ❌ | Own (reporter) | Any |
+| Delete (soft) issue | ❌ | Own (reporter) | Any |
+| Change status | ❌ | Reporter or assignee | Any |
+| Assign / unassign | ❌ | Reporter | Any |
+| Add comment | ❌ | ✅ | ✅ |
+| Edit / delete comment | ❌ | Own | Any (delete only) |
+| List / manage users | ❌ | ❌ (can read the minimal assignable-users list) | ✅ |
 
 Guard rails: an admin cannot demote or deactivate **themselves**, and the **last active admin** can never be demoted or deactivated. Deactivated users cannot log in and their refresh tokens are revoked.
 
@@ -92,24 +92,24 @@ Guard rails: an admin cannot demote or deactivate **themselves**, and the **last
 
 ## 6. Non-functional requirements
 
-| Area            | Requirement                                                                                                                                                                     |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Security        | OWASP-aligned: hashed passwords, short-lived JWT + rotating httpOnly refresh cookie, strict input validation, rate limiting, CORS allow-list, secure headers, no secrets in git |
-| Reliability     | Health endpoints, graceful shutdown, consistent error envelope, request IDs in every log line                                                                                   |
-| Performance     | List endpoints paginated (max 50/page); indexed filters; p95 < 500 ms warm                                                                                                      |
-| Usability       | Responsive 375 px → 1280 px+; loading, empty and error states on every data view; WCAG AA contrast; keyboard accessible                                                         |
-| Maintainability | TypeScript `strict` on both sides, ESLint + Prettier, small single-purpose files, documented conventions                                                                        |
-| Testability     | Policy and service unit tests; API integration tests against a real Postgres                                                                                                    |
-| Cost            | ₹0 / $0 for ≤ 10 users                                                                                                                                                          |
+| Area | Requirement |
+| ---- | ----------- |
+| Security | OWASP-aligned: hashed passwords, short-lived JWT + rotating httpOnly refresh cookie, strict input validation, rate limiting, CORS allow-list, secure headers, no secrets in git |
+| Reliability | Health endpoints, graceful shutdown, consistent error envelope, request IDs in every log line |
+| Performance | List endpoints paginated (max 50/page); indexed filters; p95 < 500 ms warm |
+| Usability | Responsive 375 px → 1280 px+; loading, empty and error states on every data view; WCAG AA contrast; keyboard accessible |
+| Maintainability | TypeScript `strict` on both sides, ESLint + Prettier, small single-purpose files, documented conventions |
+| Testability | Policy and service unit tests; API integration tests against a real Postgres |
+| Cost | ₹0 / $0 for ≤ 10 users |
 
 ---
 
 ## 7. Architecture decision: separate repositories
 
-| Option                                        | Verdict                                                                                                                                                                       |
-| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Next.js full-stack in one repo                | Fast to ship, but hides the API behind route handlers and mixes concerns. Rejected because you asked for a clear separation and a standalone API is a stronger demonstration. |
-| **Separate React SPA + Express API (chosen)** | Clear boundary, independently deployable, API reusable by any client.                                                                                                         |
+| Option | Verdict |
+| ------ | ------- |
+| Next.js full-stack in one repo | Fast to ship, but hides the API behind route handlers and mixes concerns. Rejected because you asked for a clear separation and a standalone API is a stronger demonstration. |
+| **Separate React SPA + Express API (chosen)** | Clear boundary, independently deployable, API reusable by any client. |
 
 ```
 Browser ──► Vercel (React SPA, static)
@@ -122,25 +122,25 @@ The Vercel **rewrite** makes the browser see a single origin. That lets the refr
 
 ### Technology summary
 
-| Side     | Stack                                                                                                                                                                 |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Side | Stack |
+| ---- | ----- |
 | Frontend | React 19, TypeScript (strict), Vite, Tailwind CSS v4, shadcn/ui, Redux Toolkit (auth + UI), TanStack Query (server state), React Hook Form + Zod, React Router, Axios |
-| Backend  | Node.js 22 LTS, TypeScript (strict), Express 5, PostgreSQL, Drizzle ORM + drizzle-kit migrations, Zod, JWT, bcryptjs, helmet, express-rate-limit, pino                |
-| Data     | Neon PostgreSQL (free)                                                                                                                                                |
-| Hosting  | Vercel (frontend), Render (backend), Neon (DB)                                                                                                                        |
-| Quality  | Vitest, Supertest, React Testing Library, MSW, ESLint, Prettier, GitHub Actions                                                                                       |
+| Backend | Node.js 22 LTS, TypeScript (strict), Express 5, PostgreSQL, Drizzle ORM + drizzle-kit migrations, Zod, JWT, bcryptjs, helmet, express-rate-limit, pino |
+| Data | Neon PostgreSQL (free) |
+| Hosting | Vercel (frontend), Render (backend), Neon (DB) |
+| Quality | Vitest, Supertest, React Testing Library, MSW, ESLint, Prettier, GitHub Actions |
 
 ---
 
 ## 8. Data model (summary)
 
-| Table            | Key columns                                                                                                                                                                                                          |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `users`          | `id` (uuid), `name`, `email` (unique, lowercase), `password_hash`, `role` (`USER`/`ADMIN`), `is_active`, `created_at`, `updated_at`                                                                                  |
-| `issues`         | `id` (uuid), `issue_number` (identity, shown as `#12`), `title`, `description`, `status`, `priority`, `reporter_id` → users, `assignee_id` → users (nullable), `closed_at`, `created_at`, `updated_at`, `deleted_at` |
-| `comments`       | `id`, `issue_id`, `author_id`, `body`, `created_at`, `updated_at`, `deleted_at`                                                                                                                                      |
-| `issue_activity` | `id`, `issue_id`, `actor_id`, `type`, `from_value`, `to_value`, `created_at`                                                                                                                                         |
-| `refresh_tokens` | `id`, `user_id`, `token_hash` (SHA-256), `expires_at`, `revoked_at`, `created_at`                                                                                                                                    |
+| Table | Key columns |
+| ----- | ----------- |
+| `users` | `id` (uuid), `name`, `email` (unique, lowercase), `password_hash`, `role` (`USER`/`ADMIN`), `is_active`, `created_at`, `updated_at` |
+| `issues` | `id` (uuid), `issue_number` (identity, shown as `#12`), `title`, `description`, `status`, `priority`, `reporter_id` → users, `assignee_id` → users (nullable), `closed_at`, `created_at`, `updated_at`, `deleted_at` |
+| `comments` | `id`, `issue_id`, `author_id`, `body`, `created_at`, `updated_at`, `deleted_at` |
+| `issue_activity` | `id`, `issue_id`, `actor_id`, `type`, `from_value`, `to_value`, `created_at` |
+| `refresh_tokens` | `id`, `user_id`, `token_hash` (SHA-256), `expires_at`, `revoked_at`, `created_at` |
 
 Soft delete (`deleted_at`) is used on `issues` and `comments`; users are deactivated, never deleted. Full column definitions are in the backend `ARCHITECTURE.md`.
 
@@ -156,16 +156,16 @@ Base path `/api/v1`. The full endpoint list, request/response shapes and error c
 
 Each phase ships a working slice (API **and** UI) and ends with a commit, a deploy and a smoke test. Estimates assume focused work with an AI coding agent following the `AGENT.md` / `SKILLS.md` files.
 
-| Phase                             | Deliverable                                                                                                                                              | Est. |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| Phase | Deliverable | Est. |
+| ----- | ----------- | ---- |
 | **P0** Foundations & early deploy | Both repos scaffolded; tooling, CI, env validation; DB connected; `GET /api/v1/ping`; **both apps deployed with a hello-world** (de-risks hosting first) | 60 m |
-| **P1** Auth & RBAC                | Register, login, admin login, refresh, logout, `me`; admin seed; route guards; login/register/admin-login screens                                        | 75 m |
-| **P2** Issues CRUD                | List (search, filter, sort, paginate), create, view, edit, soft-delete; list/detail/form screens                                                         | 90 m |
-| **P3** Status & assignment        | Status changes, assign/unassign, activity timeline; UI controls respecting permissions                                                                   | 45 m |
-| **P4** Comments                   | Add / edit / delete comments; thread UI                                                                                                                  | 40 m |
-| **P5** Dashboard & admin          | Counts endpoint + dashboard; admin user management                                                                                                       | 45 m |
-| **P6** Hardening & tests          | Rate limits, validation sweep, a11y/responsive pass, unit + integration tests, error/empty/loading states                                                | 60 m |
-| **P7** Docs & final deploy        | READMEs, demo data, production smoke test, submission email                                                                                              | 40 m |
+| **P1** Auth & RBAC | Register, login, admin login, refresh, logout, `me`; admin seed; route guards; login/register/admin-login screens | 75 m |
+| **P2** Issues CRUD | List (search, filter, sort, paginate), create, view, edit, soft-delete; list/detail/form screens | 90 m |
+| **P3** Status & assignment | Status changes, assign/unassign, activity timeline; UI controls respecting permissions | 45 m |
+| **P4** Comments | Add / edit / delete comments; thread UI | 40 m |
+| **P5** Dashboard & admin | Counts endpoint + dashboard; admin user management | 45 m |
+| **P6** Hardening & tests | Rate limits, validation sweep, a11y/responsive pass, unit + integration tests, error/empty/loading states | 60 m |
+| **P7** Docs & final deploy | READMEs, demo data, production smoke test, submission email | 40 m |
 
 **Cut line if time runs short:** finish P0–P5 first (that satisfies every "Must have"). In P6, keep the auth/permission tests and drop Could-haves. Never skip P7; an undocumented or undeployed project fails the brief.
 
@@ -173,17 +173,17 @@ Each phase ships a working slice (API **and** UI) and ends with a commit, a depl
 
 ## 11. Risks & mitigations
 
-| Risk                                                                             | Mitigation                                                                                                                                                                              |
-| -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Risk | Mitigation |
+| ---- | ---------- |
 | Render free service sleeps after 15 min idle; first request takes about 1 minute | Free uptime pinger (UptimeRobot / cron-job.org) hits `/api/v1/health` every 5 min; frontend shows a "waking the server…" banner when a request is slow; README tells reviewers about it |
-| Render free tier: 750 instance-hours/month                                       | One service ≈ 720 h, so it fits                                                                                                                                                         |
-| Render free Postgres expires after 30 days                                       | Not used; Neon is used instead                                                                                                                                                          |
-| Neon compute suspends after 5 min idle (first query is slower)                   | Acceptable; pooled connection string; small pool; retry-safe queries                                                                                                                    |
-| Neon free storage 1 GB / 100 CU-hours per month                                  | Orders of magnitude above what 10 users need                                                                                                                                            |
-| Render blocks outbound SMTP ports (25/465/587) on free                           | Email is out of scope                                                                                                                                                                   |
-| Rate limiting sees the wrong client IP behind two proxies                        | `TRUST_PROXY_HOPS=2` in production; verify after deploy by checking logged `req.ip`                                                                                                     |
-| Last-minute deploy failures                                                      | P0 deploys a hello-world on day one; each phase redeploys                                                                                                                               |
-| Free-tier terms change                                                           | Checked November 2026; re-check before the deadline                                                                                                                                     |
+| Render free tier: 750 instance-hours/month | One service ≈ 720 h, so it fits |
+| Render free Postgres expires after 30 days | Not used; Neon is used instead |
+| Neon compute suspends after 5 min idle (first query is slower) | Acceptable; pooled connection string; small pool; retry-safe queries |
+| Neon free storage 1 GB / 100 CU-hours per month | Orders of magnitude above what 10 users need |
+| Render blocks outbound SMTP ports (25/465/587) on free | Email is out of scope |
+| Rate limiting sees the wrong client IP behind two proxies | `TRUST_PROXY_HOPS=2` in production; verify after deploy by checking logged `req.ip` |
+| Last-minute deploy failures | P0 deploys a hello-world on day one; each phase redeploys |
+| Free-tier terms change | Checked November 2026; re-check before the deadline |
 
 ---
 
@@ -191,11 +191,11 @@ Each phase ships a working slice (API **and** UI) and ends with a commit, a depl
 
 ### 12.1 Where it is hosted
 
-| Component             | Platform           | Plan         | URL (fill in after deploy)       |
-| --------------------- | ------------------ | ------------ | -------------------------------- |
-| Frontend (static SPA) | Vercel             | Hobby (free) | `https://<frontend>.vercel.app`  |
-| Backend (Express API) | Render Web Service | Free         | `https://<backend>.onrender.com` |
-| Database              | Neon PostgreSQL    | Free         | private connection string        |
+| Component | Platform | Plan | URL (fill in after deploy) |
+| --------- | -------- | ---- | -------------------------- |
+| Frontend (static SPA) | Vercel | Hobby (free) | `https://issue-tracker-frontend-psi.vercel.app` |
+| Backend (Express API) | Vercel | Free | `https://issue-tracker-backend-three.vercel.app` |
+| Database | Neon PostgreSQL | Free | private connection string |
 
 Vercel's Hobby plan is for non-commercial use, which fits an evaluation project.
 
@@ -204,7 +204,7 @@ Vercel's Hobby plan is for non-commercial use, which fits an evaluation project.
 - **Git-driven CD.** Each repo is connected to its host; a push to `main` builds and deploys automatically. Pull requests run CI (lint, typecheck, test, build) first.
 - **Migrations run in the backend build step** (`db:migrate:prod`), so schema and code ship together. Migrations are idempotent and forward-only.
 - **Admin seeded once** by `db:seed:prod`, which creates the admin only if it does not exist, using `ADMIN_*` env vars.
-- **Same-origin API access.** `vercel.json` in the frontend rewrites `/api/*` to the Render URL, and everything else to `index.html` (SPA fallback).
+- **Same-origin API access.** `vercel.json` in the frontend rewrites `/api/*` to the live backend URL (`https://issue-tracker-backend-three.vercel.app`), and everything else to `index.html` (SPA fallback).
 
 ### 12.3 Required services
 
