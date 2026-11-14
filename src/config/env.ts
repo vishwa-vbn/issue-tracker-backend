@@ -2,10 +2,12 @@ import 'dotenv/config';
 import { z } from 'zod';
 
 const schema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  NODE_ENV: z
+    .enum(['development', 'test', 'production'])
+    .default(process.env.VERCEL ? 'production' : 'development'),
   PORT: z.coerce.number().default(4000),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
-  TRUST_PROXY_HOPS: z.coerce.number().default(0),
+  TRUST_PROXY_HOPS: z.coerce.number().default(process.env.VERCEL ? 1 : 0),
 
   DATABASE_URL: z.string().url(),
   DATABASE_URL_TEST: z.string().url().optional(),
