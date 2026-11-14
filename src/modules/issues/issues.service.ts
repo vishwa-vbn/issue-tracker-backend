@@ -23,14 +23,26 @@ export const listIssues = async (_user: AuthUser, query: ListIssuesQuery) => {
   if (query.priority) {
     conditions.push(eq(issues.priority, query.priority as IssuePriority));
   }
-  if (query.assigneeId) {
+  const isUnassigned = query.unassigned === true || query.assigneeId === 'null';
+
+  if (isUnassigned) {
+    conditions.push(isNull(issues.assigneeId));
+  } else if (
+    query.assigneeId &&
+    query.assigneeId !== 'null' &&
+    query.assigneeId !== 'undefined' &&
+    query.assigneeId !== ''
+  ) {
     conditions.push(eq(issues.assigneeId, query.assigneeId));
   }
-  if (query.reporterId) {
+
+  if (
+    query.reporterId &&
+    query.reporterId !== 'null' &&
+    query.reporterId !== 'undefined' &&
+    query.reporterId !== ''
+  ) {
     conditions.push(eq(issues.reporterId, query.reporterId));
-  }
-  if (query.unassigned) {
-    conditions.push(isNull(issues.assigneeId));
   }
   if (query.q && query.q.trim() !== '') {
     const pattern = `%${escapeLike(query.q.trim())}%`;

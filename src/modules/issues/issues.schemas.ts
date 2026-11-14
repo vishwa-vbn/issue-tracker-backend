@@ -63,8 +63,30 @@ export const listIssuesQuerySchema = z
     q: z.string().trim().optional(),
     status: z.enum(Object.values(ISSUE_STATUS) as [string, ...string[]]).optional(),
     priority: z.enum(Object.values(ISSUE_PRIORITY) as [string, ...string[]]).optional(),
-    assigneeId: z.string().uuid('Invalid assignee ID format').optional(),
-    reporterId: z.string().uuid('Invalid reporter ID format').optional(),
+    assigneeId: z
+      .string()
+      .trim()
+      .refine(
+        (val) =>
+          val === 'null' ||
+          val === 'undefined' ||
+          val === '' ||
+          z.string().uuid().safeParse(val).success,
+        { message: 'Invalid assignee ID format' },
+      )
+      .optional(),
+    reporterId: z
+      .string()
+      .trim()
+      .refine(
+        (val) =>
+          val === 'null' ||
+          val === 'undefined' ||
+          val === '' ||
+          z.string().uuid().safeParse(val).success,
+        { message: 'Invalid reporter ID format' },
+      )
+      .optional(),
     unassigned: z
       .union([z.boolean(), z.string().transform((v) => v === 'true' || v === '1')])
       .optional(),
