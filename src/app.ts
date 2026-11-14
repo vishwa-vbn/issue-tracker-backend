@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { type RequestHandler } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -38,7 +38,7 @@ if (env.NODE_ENV !== 'test') {
   );
 }
 
-app.use(helmet());
+app.use((helmet as unknown as () => RequestHandler)());
 
 app.use(
   cors({
