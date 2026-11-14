@@ -6,3 +6,4 @@ export const getSummary = async (req: Request, res: Response) => {
   const summary = await dashboardService.getDashboardSummary(req.user!);
   ok(res, summary);
 };
+

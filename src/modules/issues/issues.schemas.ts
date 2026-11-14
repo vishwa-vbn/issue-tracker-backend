@@ -68,7 +68,9 @@ export const listIssuesQuerySchema = z
     unassigned: z
       .union([z.boolean(), z.string().transform((v) => v === 'true' || v === '1')])
       .optional(),
-    sort: z.enum(['createdAt', 'updatedAt', 'priority', 'status']).default('createdAt'),
+    sort: z
+      .enum(['createdAt', 'updatedAt', 'priority', 'status', 'title', 'issueNumber'])
+      .default('createdAt'),
     order: z.enum(['asc', 'desc']).default('desc'),
   })
   .strict();

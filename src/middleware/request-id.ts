@@ -8,3 +8,4 @@ export const requestId: RequestHandler = (req, res, next) => {
   res.setHeader('x-request-id', id);
   next();
 };
+

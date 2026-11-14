@@ -39,3 +39,4 @@ export const me = async (req: Request, res: Response) => {
   const user = await authService.getMe(req.user!.id);
   ok(res, { user });
 };
+

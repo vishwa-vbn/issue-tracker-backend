@@ -5,3 +5,4 @@
 export const escapeLike = (str: string): string => {
   return str.replace(/[%_\\]/g, '\\$&');
 };
+

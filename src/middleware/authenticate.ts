@@ -58,3 +58,4 @@ export const authenticate: RequestHandler = async (req, _res, next) => {
 
   next();
 };
+

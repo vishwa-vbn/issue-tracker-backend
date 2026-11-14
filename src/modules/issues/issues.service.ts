@@ -50,6 +50,12 @@ export const listIssues = async (_user: AuthUser, query: ListIssuesQuery) => {
 
   let sortColumn;
   switch (query.sort) {
+    case 'title':
+      sortColumn = issues.title;
+      break;
+    case 'issueNumber':
+      sortColumn = issues.issueNumber;
+      break;
     case 'updatedAt':
       sortColumn = issues.updatedAt;
       break;

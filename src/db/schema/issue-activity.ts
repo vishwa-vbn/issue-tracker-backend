@@ -23,3 +23,4 @@ export const issueActivity = pgTable(
 
 export type IssueActivityRow = typeof issueActivity.$inferSelect;
 export type NewIssueActivityRow = typeof issueActivity.$inferInsert;
+

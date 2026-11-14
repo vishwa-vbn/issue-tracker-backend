@@ -18,3 +18,4 @@ describe('escapeLike Lib', () => {
     expect(escapeLike('normal query 123 !@#')).toBe('normal query 123 !@#');
   });
 });
+

@@ -18,3 +18,4 @@ export const canChangeStatus = (user: AuthUser, issue: IssueRow): boolean => {
 export const canAssignIssue = (user: AuthUser, issue: IssueRow): boolean => {
   return isAdmin(user) || issue.reporterId === user.id;
 };
+

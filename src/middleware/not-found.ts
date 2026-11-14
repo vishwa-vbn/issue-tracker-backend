@@ -4,3 +4,4 @@ import { AppError } from '../lib/app-error.js';
 export const notFound: RequestHandler = (_req, _res, next) => {
   next(new AppError('ROUTE_NOT_FOUND'));
 };
+

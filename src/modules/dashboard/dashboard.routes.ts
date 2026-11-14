@@ -7,3 +7,4 @@ const router = Router();
 router.get('/summary', authenticate, dashboardController.getSummary);
 
 export default router;
+

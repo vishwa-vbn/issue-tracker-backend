@@ -8,3 +8,4 @@ export const canEditComment = (user: AuthUser, comment: CommentRow): boolean => 
 export const canDeleteComment = (user: AuthUser, comment: CommentRow): boolean => {
   return user.role === 'ADMIN' || comment.authorId === user.id;
 };
+

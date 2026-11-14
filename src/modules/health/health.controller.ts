@@ -27,3 +27,4 @@ export const ready = async (_req: Request, res: Response) => {
     throw new AppError('INTERNAL_ERROR', err, 'Database connection failed');
   }
 };
+

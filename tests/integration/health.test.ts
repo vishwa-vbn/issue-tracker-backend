@@ -32,3 +32,4 @@ describe('Health Endpoints (Integration)', () => {
     expect(res.body.requestId).toBeDefined();
   });
 });
+

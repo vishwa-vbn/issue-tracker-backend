@@ -5,10 +5,15 @@ import { env } from '../config/env.js';
 
 const { Pool } = pg;
 
+const isSslRequired =
+  env.NODE_ENV === 'production' ||
+  env.DATABASE_URL.includes('sslmode=require') ||
+  env.DATABASE_URL.includes('neon.tech');
+
 export const pool = new Pool({
   connectionString: env.DATABASE_URL,
   max: env.DB_POOL_MAX,
-  ssl: env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: isSslRequired ? { rejectUnauthorized: false } : false,
 });
 
 export const db = drizzle(pool, { schema });

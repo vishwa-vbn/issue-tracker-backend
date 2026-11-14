@@ -8,3 +8,4 @@ router.get('/health', healthController.health);
 router.get('/health/ready', healthController.ready);
 
 export default router;
+

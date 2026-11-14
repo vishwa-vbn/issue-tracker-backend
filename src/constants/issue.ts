@@ -25,3 +25,4 @@ export const ACTIVITY_TYPE = {
 } as const;
 
 export type ActivityType = (typeof ACTIVITY_TYPE)[keyof typeof ACTIVITY_TYPE];
+

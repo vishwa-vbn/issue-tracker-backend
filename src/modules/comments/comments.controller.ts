@@ -35,3 +35,4 @@ export const deleteComment = async (req: Request, res: Response) => {
   await commentsService.deleteComment(req.user!, req.params.id as string);
   noContent(res);
 };
+

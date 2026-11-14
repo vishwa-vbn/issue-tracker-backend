@@ -52,3 +52,4 @@ export const getActivity = async (req: Request, res: Response) => {
   const activities = await activityService.getActivityTimeline(req.params.id as string);
   ok(res, activities);
 };
+

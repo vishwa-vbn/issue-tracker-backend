@@ -27,3 +27,4 @@ if (process.argv[1]?.endsWith('migrate.ts') || process.argv[1]?.endsWith('migrat
       process.exit(1);
     });
 }
+
