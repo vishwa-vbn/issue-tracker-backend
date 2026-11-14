@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { registerSchema, loginSchema } from '../../src/modules/auth/auth.schemas.js';
 import { createIssueSchema } from '../../src/modules/issues/issues.schemas.js';
-import { updateUserSchema } from '../../src/modules/users/users.schemas.js';
+import { updateUserSchema, createUserSchema } from '../../src/modules/users/users.schemas.js';
 
 describe('Validation Schemas', () => {
   describe('registerSchema', () => {
@@ -94,6 +94,14 @@ describe('Validation Schemas', () => {
   });
 
   describe('updateUserSchema', () => {
+    it('accepts name and email update', () => {
+      const result = updateUserSchema.safeParse({
+        name: 'New Name',
+        email: 'newemail@example.com',
+      });
+      expect(result.success).toBe(true);
+    });
+
     it('accepts role update', () => {
       const result = updateUserSchema.safeParse({ role: 'ADMIN' });
       expect(result.success).toBe(true);
@@ -106,6 +114,27 @@ describe('Validation Schemas', () => {
 
     it('rejects empty update object', () => {
       const result = updateUserSchema.safeParse({});
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('createUserSchema', () => {
+    it('accepts valid user creation input', () => {
+      const result = createUserSchema.safeParse({
+        name: 'Bob Martin',
+        email: 'bob@example.com',
+        password: 'Passw0rd123',
+        role: 'ADMIN',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects invalid email', () => {
+      const result = createUserSchema.safeParse({
+        name: 'Bob Martin',
+        email: 'not-an-email',
+        password: 'Passw0rd123',
+      });
       expect(result.success).toBe(false);
     });
   });

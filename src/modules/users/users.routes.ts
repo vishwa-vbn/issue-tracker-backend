@@ -3,11 +3,24 @@ import * as usersController from './users.controller.js';
 import { authenticate } from '../../middleware/authenticate.js';
 import { requireRole } from '../../middleware/authorize.js';
 import { validate } from '../../middleware/validate.js';
-import { userIdParamsSchema, updateUserSchema, listUsersQuerySchema } from './users.schemas.js';
+import {
+  userIdParamsSchema,
+  createUserSchema,
+  updateUserSchema,
+  listUsersQuerySchema,
+} from './users.schemas.js';
 
 const router = Router();
 
 router.get('/assignable', authenticate, usersController.getAssignable);
+
+router.post(
+  '/',
+  authenticate,
+  requireRole('ADMIN'),
+  validate({ body: createUserSchema }),
+  usersController.createUser,
+);
 
 router.get(
   '/',
@@ -15,6 +28,14 @@ router.get(
   requireRole('ADMIN'),
   validate({ query: listUsersQuerySchema }),
   usersController.listUsers,
+);
+
+router.get(
+  '/:id',
+  authenticate,
+  requireRole('ADMIN'),
+  validate({ params: userIdParamsSchema }),
+  usersController.getUserById,
 );
 
 router.patch(
@@ -25,5 +46,12 @@ router.patch(
   usersController.updateUser,
 );
 
-export default router;
+router.delete(
+  '/:id',
+  authenticate,
+  requireRole('ADMIN'),
+  validate({ params: userIdParamsSchema }),
+  usersController.deleteUser,
+);
 
+export default router;

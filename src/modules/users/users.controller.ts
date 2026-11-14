@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import * as usersService from './users.service.js';
-import { ok, paginated } from '../../lib/respond.js';
+import { ok, created, paginated, noContent } from '../../lib/respond.js';
 import type { ListUsersQuery } from './users.schemas.js';
 
 export const getAssignable = async (_req: Request, res: Response) => {
@@ -14,7 +14,26 @@ export const listUsers = async (req: Request, res: Response) => {
   paginated(res, rows, meta);
 };
 
+export const getUserById = async (req: Request, res: Response) => {
+  const user = await usersService.getUserById(req.params.id as string);
+  ok(res, user);
+};
+
+export const createUser = async (req: Request, res: Response) => {
+  const user = await usersService.createUser(req.body);
+  created(res, user);
+};
+
 export const updateUser = async (req: Request, res: Response) => {
-  const updated = await usersService.updateUser(req.user!, req.params.id as string, req.body);
+  const updated = await usersService.updateUser(
+    req.user!,
+    req.params.id as string,
+    req.body,
+  );
   ok(res, updated);
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  await usersService.deleteUser(req.user!, req.params.id as string);
+  noContent(res);
 };
